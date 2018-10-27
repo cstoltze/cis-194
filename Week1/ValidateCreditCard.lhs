@@ -38,4 +38,15 @@ doubleEveryOther [1,2,3] == [1,4,3]
 > doubleEveryOtherReversed (x:y:rest) = x:(2*y):(doubleEveryOtherReversed rest)
 
 
+Exercise 3:
+-----------
 
+Define the function sumDigits to sum the digits in a list of integers
+
+> -- sums the digits in a list of (possibly multi-digit) integers
+> sumDigits :: [Integer] -> Integer
+> sumDigits xs = sum ( map sumDigitsInteger xs )
+
+> -- sums the digits of an integer
+> sumDigitsInteger :: Integer -> Integer
+> sumDigitsInteger = sum . toDigitsRev
