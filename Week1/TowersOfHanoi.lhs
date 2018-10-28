@@ -27,14 +27,16 @@ Similar to hanoi, but with an extra peg
 
 Approach:
 This game simplifies to hanoi when one of the extra pegs occupied.
-To be efficient (not sure if it is MOST efficient solution), we should:
-1) move all but four discs to peg c (using all pegs as storage)
-2) move three of the remaining discs to peg d (the other storage peg).
-      NOTE: during this step we must use `hanoi 3 a b d` because peg c is
+To be fastest, we look for the shortest set of moves.
+1) move all but x discs to peg c (using all pegs as storage)
+2) move the remaining discs to peg b (the target peg)
+      NOTE: during this step we must use `hanoi x a b d` because peg c is
 	        occupied by smaller discs
-3) move the last disc to peg b (the target peg)
-4) move the three remaining discs from peg d to peg b (`hanoi 3 d b a`)
-5) move the discs from peg c to peg b (using all pegs as storage)
+3) move the discs from peg c to peg b (using all pegs as storage)
+
+We choose the `x` that makes the shortest list of moves.
+
+
 
 
 > -- given the number of discs and the names of the pegs return list of moves to solve
@@ -42,6 +44,21 @@ To be efficient (not sure if it is MOST efficient solution), we should:
 > hanoi4 n a b c d 
 >     | n <= 2    = hanoi n a b d
 >     | n == 3    = [(a,c),(a,d),(a,b),(d,b),(c,b)]
->     | otherwise = (hanoi4 (n-4) a c b d) ++ hanoi 3 a d b ++ [(a,b)] ++ hanoi 3 d b a ++ (hanoi4 (n-4) c b a d)
+>     | otherwise = shortest ( allSolutions n a b c d )
 
+> -- gets all solutions
+> allSolutions :: Integer -> Peg -> Peg -> Peg -> Peg -> [[Move]]
+> allSolutions n a b c d = [hanoi4WithSplit n x a b c d | x <- [1..n]]
 
+> -- solves hanoi4 by moving all but x discs to peg c, then uses hanoi to move the re
+> -- remaining discs to peg b using hanoi. Finally it moves the discs from peg c to b 
+> -- using hanoi4
+> hanoi4WithSplit :: Integer -> Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
+> hanoi4WithSplit n x a b c d = (hanoi4 (n-x) a c b d) ++ hanoi (x-1) a d b ++ [(a,b)] ++ hanoi (x-1) d b a ++ (hanoi4 (n-x) c b a d)
+
+> shortest :: [[Move]] -> [Move]
+> shortest [] = []
+> shortest [x] = x
+> shortest (x:y:rest)
+>   | length x > length y = shortest (y:rest)
+>   | otherwise           = shortest (x:rest)
