@@ -36,14 +36,10 @@ To be fastest, we look for the shortest set of moves.
 
 We choose the `x` that makes the shortest list of moves.
 
-
-
-
 > -- given the number of discs and the names of the pegs return list of moves to solve
 > hanoi4 :: Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
 > hanoi4 n a b c d 
 >     | n <= 2    = hanoi n a b d
->     | n == 3    = [(a,c),(a,d),(a,b),(d,b),(c,b)]
 >     | otherwise = shortest ( allSolutions n a b c d )
 
 > -- gets all solutions
@@ -51,10 +47,10 @@ We choose the `x` that makes the shortest list of moves.
 > allSolutions n a b c d = [hanoi4WithSplit n x a b c d | x <- [1..n]]
 
 > -- solves hanoi4 by moving all but x discs to peg c, then uses hanoi to move the re
-> -- remaining discs to peg b using hanoi. Finally it moves the discs from peg c to b 
+> -- remaining discs to peg b. Finally it moves the discs from peg c to b 
 > -- using hanoi4
 > hanoi4WithSplit :: Integer -> Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
-> hanoi4WithSplit n x a b c d = (hanoi4 (n-x) a c b d) ++ hanoi (x-1) a d b ++ [(a,b)] ++ hanoi (x-1) d b a ++ (hanoi4 (n-x) c b a d)
+> hanoi4WithSplit n x a b c d = (hanoi4 (n-x) a c b d) ++ hanoi x a b d ++ (hanoi4 (n-x) c b a d)
 
 > shortest :: [[Move]] -> [Move]
 > shortest [] = []
