@@ -50,3 +50,18 @@ Define the function sumDigits to sum the digits in a list of integers
 > -- sums the digits of an integer
 > sumDigitsInteger :: Integer -> Integer
 > sumDigitsInteger = sum . toDigitsRev
+
+
+Exercise 4:
+-----------
+
+Define the function to validate if a credit card number could be vaild
+
+> -- Indicates if a number could be a valid credit card number
+
+> validate :: Integer -> Bool
+> validate = divisibleByTen . sumDigits . doubleEveryOther . toDigits
+
+> -- is the number divisible by ten
+> divisibleByTen :: Integer -> Bool
+> divisibleByTen x = 0 == x `mod` 10
