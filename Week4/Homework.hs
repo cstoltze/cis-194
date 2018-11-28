@@ -10,14 +10,27 @@ fun2 = sum
 
 
 -- Exercise 2
--- data Tree a = Leaf
---             | Node Integer (Tree a) a (Tree a)
---   deriving (Show, Eq)
+data Tree a = Leaf
+            | Node Integer (Tree a) a (Tree a)
+  deriving (Show, Eq)
 
--- foldTree :: [a] -> Tree a
--- foldTree = foldr 
+foldTree :: [a] -> Tree a
+foldTree = calculateHeight . foldr (addToShorter) Leaf
 
--- addToShorter = 
+addToShorter :: a -> Tree a -> Tree a
+addToShorter x Leaf = Node 0 Leaf x Leaf
+addToShorter x t@(Node h l v r)
+    | height l <= height r = Node h (addToShorter x l) v r
+    | otherwise            = Node h l v (addToShorter x r)
+
+calculateHeight :: Tree a -> Tree a
+calculateHeight Leaf = Leaf
+calculateHeight t@(Node h l v r) = Node (height t) (calculateHeight l) v (calculateHeight r)
+
+height :: Tree a -> Integer
+height Leaf = 0
+height (Node h l v r) = 1 + max (height l) (height r)
+    
 
 -- Exercise 3
 
@@ -30,7 +43,10 @@ map' :: (a -> b) -> [a] -> [b]
 map' f = foldr ((:) . f) []
 
 -- 3)
+myFoldl :: (a -> b -> a) -> a -> [b] -> a
+myFoldl f base xs = foldr (rev f) base (reverse xs)
 
+rev f x y = f y x
 
 
 -- Exercise 4
